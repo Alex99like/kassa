@@ -4,7 +4,7 @@
   flex-direction: column;
   //border: 1px solid gray;
   border-radius: 6px;
-  max-height: 76vh;
+  max-height: calc(100vh - 200px);
   overflow: hidden;
 
   h3 {
