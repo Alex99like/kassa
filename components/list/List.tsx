@@ -1,3 +1,5 @@
+'use client'
+
 import { fakeData } from '@/data/fake-data'
 import styles from './List.module.scss'
 import { formatDate } from '@/utils/formatDate'
@@ -10,7 +12,7 @@ export const List = () => {
       <h3>Список Приема</h3>
       <div className={styles.list}>
         {fakeData.map(trans => (
-          <div className={styles.item}>
+          <div className={styles.item} key={Math.random()}>
             <div className={styles.reception}>
               <span>{trans.weight} <b>x {trans.reception}</b> = </span>
               <span>{trans.money} р.</span>

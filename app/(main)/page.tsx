@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {modal && <Note />}
+      <Note />
       <div className={styles.navbar}>
         <Weight />
         <Money />
