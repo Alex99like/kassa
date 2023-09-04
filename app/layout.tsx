@@ -1,3 +1,4 @@
+import { ReduxProvider } from '@/providers/ReduxProvider'
 import './(styles)/globals.scss'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Kassa App',
   manifest: '/manifest.json',
   icons: { apple: '/next.svg' },
-  themeColor: "#01c629"
+  themeColor: "#101010"
 }
 
 export default function RootLayout({
@@ -20,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   )
