@@ -2,6 +2,8 @@ import Image from 'next/image'
 import styles from './page.module.scss'
 import { Money } from '@/components/money/Money'
 import { Weight } from '@/components/weight/Weight'
+import { List } from '@/components/list/List'
+import { Control } from '@/components/control/Control'
 
 export default function Home() {
   return (
@@ -10,6 +12,8 @@ export default function Home() {
         <Weight />
         <Money />
       </div>
+      <List />
+      <Control />
     </main>
   )
 }
