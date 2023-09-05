@@ -8,9 +8,9 @@ import { AnimatePresence } from 'framer-motion'
 export const ReduxProvider = ({ children }: PropsWithChildren) => {
   return (
     <Provider store={store}>
-      <AnimatePresence>
+      <>
         {children}
-      </AnimatePresence>
+      </>
     </Provider>
   )
 } 

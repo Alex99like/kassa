@@ -8,11 +8,13 @@ import { List } from '@/components/list/List'
 import { Control } from '@/components/control/Control'
 import { Note } from '@/components/modals/Note'
 import { useAppSelector } from '@/hooks/useAppSelector'
+import { AnimatePresence } from 'framer-motion'
 
 export default function Home() {
   const { modal } = useAppSelector(state => state.root)
 
   return (
+  <>
     <main className={styles.main}>
       <Note />
       <div className={styles.navbar}>
@@ -22,5 +24,6 @@ export default function Home() {
       <List />
       <Control />
     </main>
+  </>  
   )
 }
