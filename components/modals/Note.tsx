@@ -90,7 +90,7 @@ export const Note = () => {
           <strong>x6</strong>
         </div>
         
-        <span>Оплата:  <b>{+countSum() * 6}руб.</b></span>
+        <span>Оплата:  <b>{(+countSum() * 6).toFixed(2)}руб.</b></span>
       </div>
       <div className={styles.btns}>
         <button className={styles.reset}>Сброс</button>
