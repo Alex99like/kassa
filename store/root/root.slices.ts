@@ -25,6 +25,13 @@ const rootSlice = createSlice({
     },
     setNotes: (state, { payload }: PayloadAction<{ notes: ITransaction[] }>) => {
       state.notes = payload.notes
+    },
+    addNewNotes: (state, { payload }: PayloadAction<{ note: ITransaction }>) => {
+      console.log(payload.note)
+      state.notes.push(payload.note)
+    },
+    deleteNote: (state, { payload }: PayloadAction<{ id: string }>) => {
+      state.notes = state.notes.filter(el => el.id !== payload.id)
     }
   }
 })

@@ -6,9 +6,17 @@ import { FiEdit } from 'react-icons/fi'
 import { MdDelete } from 'react-icons/md'
 import { useAppSelector } from '@/hooks/useAppSelector'
 import { motion } from 'framer-motion'
+import axios from 'axios'
+import { useActions } from '@/hooks/useActions'
 
 export const List = () => {
+  const { deleteNote } = useActions()
   const { notes } = useAppSelector(state => state.root)
+
+  const handleDeleteNote = async (id: string) => {
+    const { data } = await axios.delete(`api/note?id=${id}`)
+    deleteNote({ id: data.res.id })
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -27,7 +35,7 @@ export const List = () => {
             <span className={styles.date}>{formatDate(trans.date)}</span>
             <div className={styles.buttons}>
               <FiEdit className={styles.edit} />
-              <MdDelete className={styles.delete} />
+              <MdDelete onClick={() => handleDeleteNote(trans.id)} className={styles.delete} />
             </div>
           </motion.div>
         ))}

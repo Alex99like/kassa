@@ -12,10 +12,11 @@ import { v4 } from 'uuid'
 import { EditNote } from './EditNote'
 import { DeleteNote } from './DeleteNote'
 import axios from 'axios'
+import { ITransaction } from '@/types/type-transaction'
 
 export const Note = () => {
   const { modal, reception } = useAppSelector(state => state.root)
-  const { handleModal } = useActions()
+  const { handleModal, addNewNotes } = useActions()
   const [modalChoice, setModal] = useState<null | 'editReception'>(null)
 
   const [weights, setWeight] = useState<{ val: number, id: string }[]>([])
@@ -83,7 +84,8 @@ export const Note = () => {
       money: +countSum() * countReception
     }
 
-    await axios.post('api/note', { note })
+    const { data } = await axios.post('api/note', { note })
+    addNewNotes({ note: { ...data.res } })
     handleModal(false)
     reset()
   }

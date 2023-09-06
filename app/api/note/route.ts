@@ -36,3 +36,25 @@ export async function POST(
     return new NextResponse("Internal Error", { status: 500 });
   }  
 }
+
+export async function DELETE(
+  req: Request,
+  res: Response
+) {
+  try {
+    const id = new URL(req.url).searchParams.get('id')
+
+    if (id) {
+      const res = await db.transaction.delete({
+        where: { id }
+      })
+      return NextResponse.json({ res });
+    }
+    
+    return NextResponse.json("Internal Error", { status: 500 });
+    
+  } catch (error) {
+    console.log("CHANNELS_POST", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }  
+}
