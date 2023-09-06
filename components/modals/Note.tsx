@@ -7,43 +7,106 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { KeyboardEvent, useState } from 'react'
 import { FiEdit } from 'react-icons/fi'
 import { MdDelete } from 'react-icons/md'
+import { EditReception } from './EditReception'
+import { v4 } from 'uuid'
+import { EditNote } from './EditNote'
+import { DeleteNote } from './DeleteNote'
 
 export const Note = () => {
-  const { modal } = useAppSelector(state => state.root)
+  const { modal, reception } = useAppSelector(state => state.root)
   const { handleModal } = useActions()
+  const [modalChoice, setModal] = useState<null | 'editReception'>(null)
 
-  const [weights, setWeight] = useState<number[]>([])
-  const [containers, setContainers] = useState<number[]>([])
+  const [weights, setWeight] = useState<{ val: number, id: string }[]>([])
+  const [containers, setContainers] = useState<{ val: number, id: string }[]>([])
+  const [countReception, serCountReception] = useState(reception) 
 
-  const countSum = () => (weights.reduce((acc, el) => acc + el, 0) - containers.reduce((acc, el) => acc + el, 0)).toFixed(2)
+  const countSum = () => (weights.reduce((acc, el) => acc + el.val, 0) - containers.reduce((acc, el) => acc + el.val, 0)).toFixed(2)
 
   const [choice, setChoice] = useState<'weight' | 'container'>('weight')
   const [value, setValue] = useState('')
-  
+
+  const [editNote, setEditNote] = useState<null | { val: number, id: string, edit: 'weight' | 'container' }>(null)
+  const [deleteNote, setDeleteNote] = useState<null | { val: number, id: string, edit: 'weight' | 'container' }>(null)
+
   const handleData = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (choice === 'weight') {
-        setWeight(prev => [...prev, +value])
+        setWeight(prev => [...prev, { val: +value, id: v4() }])
         setValue('')
       } else {
-        setContainers(prev => [...prev, +value])
+        setContainers(prev => [...prev, { val: +value, id: v4() }])
         setValue('')
       }
     }
   }
 
+  const handleEdit = (val: { val: number, id: string, edit: 'weight' | 'container' }, newValue: number) => {
+    if (val.edit === 'weight') {
+      setWeight(prev => prev.map(el => {
+        if (el.id === val.id) {
+          el.val = newValue
+          return el
+        } else return el
+      }))
+    } else {
+      setContainers(prev => prev.map(el => {
+        if (el.id === val.id) {
+          el.val = newValue
+          return el
+        } else return el
+      }))
+    }
+  }
+
+  const handleDelete = (val: { val: number, id: string, edit: 'weight' | 'container' }) => {
+    if (val.edit === 'weight') {
+      setWeight(prev => prev.filter(el => el.id !== val.id))
+    } else {
+      setContainers(prev => prev.filter(el => el.id !== val.id))
+    }
+  }
+
+  const reset = () => {
+    setContainers([])
+    setWeight([])
+    setChoice('weight')
+    setValue('')
+  }
+
   return (
     <AnimatePresence>
-    {modal && (
-    <motion.div 
-      key="modal"
-      className={styles.wrapper}
-      initial={{ height: 0 }}
-      exit={{ height: 0 }}
-      animate={{ height: '100vh' }}
-      transition={{ duration: .3 }}
-    >
-      <div className={styles.container}>
+      {modalChoice === 'editReception' && (
+        <EditReception 
+          closeModal={() => setModal(null)}
+          reception={countReception}
+          changeReception={serCountReception}
+        />)
+      }
+      {editNote && (
+        <EditNote 
+          note={editNote}
+          handleEdit={handleEdit}
+          onClose={() => setEditNote(null)}
+        />
+      )}
+      {deleteNote && (
+        <DeleteNote 
+          note={deleteNote}
+          handleDelete={handleDelete}
+          onClose={() => setDeleteNote(null)}
+        />
+      )}
+      {modal && (
+      <motion.div 
+        key="modal"
+        className={styles.wrapper}
+        initial={{ height: 0 }}
+        exit={{ height: 0 }}
+        animate={{ height: '100vh' }}
+        transition={{ duration: .3 }}
+      >
+        <div className={styles.container}>
         <button onClick={() => handleModal(false)} className={styles.close}>ЗАКРЫТЬ</button>
         <div className={styles.input}>
           <input 
@@ -58,47 +121,55 @@ export const Note = () => {
           </button>
         </div>
         <div className={styles.weights}>
-          <h3>Вес - {weights.reduce((acc, el) => acc + el, 0).toFixed(2)}кг.</h3>
+          <h3>Вес - {weights.reduce((acc, el) => acc + el.val, 0).toFixed(2)}кг.</h3>
           {weights.map((el) => (
             <span className={styles.item} key={Math.random()}>
-              <span>{el} кг.</span>
+              <span>{el.val} кг.</span>
               <div className={styles.buttons}>
-                <FiEdit className={styles.edit} />
-                <MdDelete className={styles.delete} />
+                <button onClick={() => setEditNote({ ...el, edit: 'weight' })}>
+                 <FiEdit className={styles.edit} />
+               </button>
+               <button onClick={() => setDeleteNote({ ...el, edit: 'weight' })}>
+                 <MdDelete className={styles.delete} />
+               </button>  
               </div>
             </span>
           ))}
         </div>
         <div className={styles.containers}>
-          <h3>Тара - {containers.reduce((acc, el) => acc + el, 0).toFixed(2)}кг.</h3>
+          <h3>Тара - {containers.reduce((acc, el) => acc + el.val, 0).toFixed(2)}кг.</h3>
           {containers.map((el) => (
            <span className={styles.item} key={Math.random()}>
-             <span>{el} кг.</span>
+             <span>{el.val} кг.</span>
              <div className={styles.buttons}>
-               <FiEdit className={styles.edit} />
-               <MdDelete className={styles.delete} />
+               <button onClick={() => setEditNote({ ...el, edit: 'container' })}>
+                 <FiEdit className={styles.edit} />
+               </button>
+               <button onClick={() => setDeleteNote({ ...el, edit: 'container' })}>
+                 <MdDelete className={styles.delete} />
+               </button>  
              </div>
            </span>
           ))}
         </div>
-      </div>
-      <div className={styles.result}>
-        <div>
-          <b> 
-            {countSum() + 'кг.'}
-          </b>
-          <strong>x6</strong>
+        </div>
+        <div className={styles.result}>
+          <div>
+            <b> 
+              {countSum() + 'кг.'}
+            </b>
+            <strong onClick={() => setModal('editReception')}>x{countReception}</strong>
+          </div>
+          
+          <span>Оплата:  <b>{(+countSum() * countReception).toFixed(2)}руб.</b></span>
+        </div>
+        <div className={styles.btns}>
+          <button onClick={reset} className={styles.reset}>Сброс</button>
+          <button className={styles.save}>Сохранить</button>
         </div>
         
-        <span>Оплата:  <b>{(+countSum() * 6).toFixed(2)}руб.</b></span>
-      </div>
-      <div className={styles.btns}>
-        <button className={styles.reset}>Сброс</button>
-        <button className={styles.save}>Сохранить</button>
-      </div>
-      
-    </motion.div>   
-    )}
+      </motion.div>   
+      )}
     </AnimatePresence>
   )
 }
