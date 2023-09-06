@@ -12,7 +12,8 @@ import { v4 } from 'uuid'
 import { EditNote } from './EditNote'
 import { DeleteNote } from './DeleteNote'
 import axios from 'axios'
-import { ITransaction } from '@/types/type-transaction'
+import { SaveNote } from './SaveNote'
+import { ResetNote } from './ResetNote'
 
 export const Note = () => {
   const { modal, reception } = useAppSelector(state => state.root)
@@ -30,6 +31,9 @@ export const Note = () => {
 
   const [editNote, setEditNote] = useState<null | { val: number, id: string, edit: 'weight' | 'container' }>(null)
   const [deleteNote, setDeleteNote] = useState<null | { val: number, id: string, edit: 'weight' | 'container' }>(null)
+
+  const [saveModal, setSaveModal] = useState(false)
+  const [resetModal, setResetModal] = useState(false)
 
   const handleData = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -99,6 +103,22 @@ export const Note = () => {
           changeReception={serCountReception}
         />)
       }
+      {resetModal && (
+        <ResetNote
+          reset={reset}
+          onClose={() => setResetModal(false)}
+        />
+      )}
+      {saveModal && (
+        <SaveNote 
+          weight={weights.reduce((acc, el) => acc + el.val, 0)}
+          container={containers.reduce((acc, el) => acc + el.val, 0)}
+          result={+countSum()}
+          reception={countReception}
+          save={saveNote}
+          onClose={() => setSaveModal(false)}
+        />
+      )}
       {editNote && (
         <EditNote 
           note={editNote}
@@ -180,8 +200,8 @@ export const Note = () => {
           <span>Оплата:  <b>{(+countSum() * countReception).toFixed(2)}руб.</b></span>
         </div>
         <div className={styles.btns}>
-          <button onClick={reset} className={styles.reset}>Сброс</button>
-          <button onClick={saveNote} className={styles.save}>Сохранить</button>
+          <button onClick={() => setResetModal(true)} className={styles.reset}>Сброс</button>
+          <button onClick={() => setSaveModal(true)} className={styles.save}>Сохранить</button>
         </div>
         
       </motion.div>   
