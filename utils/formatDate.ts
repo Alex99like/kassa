@@ -1,4 +1,5 @@
-export const formatDate = (date: Date): string => {
+export const formatDate = (dateVal: Date): string => {
+  const date = new Date(dateVal)
   const months = [
     'января',
     'февраля',

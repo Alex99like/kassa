@@ -11,6 +11,7 @@ import { EditReception } from './EditReception'
 import { v4 } from 'uuid'
 import { EditNote } from './EditNote'
 import { DeleteNote } from './DeleteNote'
+import axios from 'axios'
 
 export const Note = () => {
   const { modal, reception } = useAppSelector(state => state.root)
@@ -40,6 +41,7 @@ export const Note = () => {
       }
     }
   }
+
 
   const handleEdit = (val: { val: number, id: string, edit: 'weight' | 'container' }, newValue: number) => {
     if (val.edit === 'weight') {
@@ -72,6 +74,18 @@ export const Note = () => {
     setWeight([])
     setChoice('weight')
     setValue('')
+  }
+
+  const saveNote = async () => {
+    const note = {
+      weight: +countSum(),
+      reception: countReception,
+      money: +countSum() * countReception
+    }
+
+    await axios.post('api/note', { note })
+    handleModal(false)
+    reset()
   }
 
   return (
@@ -165,7 +179,7 @@ export const Note = () => {
         </div>
         <div className={styles.btns}>
           <button onClick={reset} className={styles.reset}>Сброс</button>
-          <button className={styles.save}>Сохранить</button>
+          <button onClick={saveNote} className={styles.save}>Сохранить</button>
         </div>
         
       </motion.div>   
