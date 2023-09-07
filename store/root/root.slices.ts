@@ -9,7 +9,7 @@ interface IInitialState {
 
 const initialState: IInitialState = {
   modal: false,
-  reception: 5,
+  reception: 7,
   notes: []
 }
 
@@ -32,7 +32,7 @@ const rootSlice = createSlice({
     },
     deleteNote: (state, { payload }: PayloadAction<{ id: string }>) => {
       state.notes = state.notes.filter(el => el.id !== payload.id)
-    }
+    },
   }
 })
 

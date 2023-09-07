@@ -6,13 +6,15 @@ export async function GET(
   res: Response
 ) {
   try {
+    console.log("resnder")
     const notes = await db.transaction.findMany({
       orderBy: {
         date: 'asc'
       }
     })
+    console.log(notes)
     
-    return NextResponse.json({ notes });
+    return NextResponse.json({ notes: [] });
   } catch (error) {
     console.log("CHANNELS_POST", error);
     return new NextResponse("Internal Error", { status: 500 });
